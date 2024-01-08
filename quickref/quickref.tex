@@ -539,48 +539,34 @@ ClassTag needed for generic array constr.: \code|def mkArr[A:reflect.ClassTag](a
 %, scala.concurrent.Future
 }\Newline
 
-{\small \textbf{Option[T]} is like a one element collection. \textbf{Option[T]} is either \textbf{Some[T]} (value present) or \textbf{None} (value absent). }
-{\small \textbf{Try[T]} is (also) like a one element collection. \textbf{Try[T]} is either \textbf{Success[T]} (value present) or \textbf{Failure[E]} (where E is an exception). }
+{\small \textbf{Option[T]} is like a one element collection. \textbf{Option[T]} is either \textbf{Some[T]} (value present) or \textbf{None} (value absent).} \\
+{\small \textbf{Try[T]} is (also) like a one element collection. \textbf{Try[T]} is either \textbf{Success[T]} (value present) or \textbf{Failure[E]} (where E is an exception). Try, Success, Failure needs import: \code|import scala.util.{Try, Success, Failure}|} \\
 % {\small \textbf{Option[T]} is like a collection with zero or one element. \textbf{Some[T]} and \textbf{None} are subtypes of Option. }
+{\small Rule of thumb: collection-like methods work on both \textbf{Option} and \textbf{Try[T]}, e.g. foreach, map, filter, toVector, ...} \\
 
-% \renewcommand{\arraystretch}{1.0}\vspace{0.25em}
-% {\small%
+\renewcommand{\arraystretch}{1.0}\vspace{0.25em}
+{\small%
 
 
-% \begin{tabular}{@{}l @{\hspace{1.0em}}l}
+\begin{tabular}{@{}l @{\hspace{1.0em}}l}
 
-% \multicolumn{2}{l}{\hspace{-0.62em}\code|val opt: Option[String] = if math.random() > 0.9 then Some("bingo") else None|} \\
+\multicolumn{2}{l}{\hspace{-0.62em}Accessing values for \code|val maybe: Option[String]| or \code|val maybe: Try[String]|} \\
 
-% \code|opt.getOrElse(expr)|
-% & \Comment{if opt == Some[T] then x else expr}\\
+\code|maybe.get|
+& \Comment{if maybe == Some[T] / Success[T] then x else throws NoSuchElementException}\\
 
-% \code|opt.map(f}|
-% & \Comment{if opt == Some(x) then f(x) else None}\\
+\code|maybe.getOrElse(expr)|
+& \Comment{if opt == Some[T] / Success[T] then x else expr}\\
 
-% \code|opt.get|
-% & \Comment{if opt == Some[T] then x else throws NoSuchElementException}\\
-% \end{tabular}
+\code|maybe match { case Some(x) / Success(x) => expr1;  case None / e => expr2} |
+& \Comment{expr1 if Some(x) / Success(x) else expr2}\\
 
-% \begin{tabular}{@{}l @{\hspace{1.0em}}r}
-% \code|opt match { case Some(x) => expr1;  case None => expr2 } |
-% & \Comment{expr1 if Some(x) else expr2}\\
-% \end{tabular}
-% }% small
+\code|Try(expr1).recover{ case e: Exception => expr2 }| & \hspace{5em}\Comment{Success(expr2) if exception else Success(expr1)} \\
+\code|Try(1/0) match { case Success(x) => x; case Failure(e) => 0 }| %\Comment{~~e is ArithmeticException}
+\end{tabular}
+}% small
 
-% \vspace{0.25em}
-% {\small\renewcommand{\arraystretch}{1.0}
-% {\textbf{Try[T]} is like a collection with \textbf{Success[T]} or \textbf{Failure[E]}.\hfill\code|import scala.util.{Try, Success, Failure}|}
-
-% \begin{tabular}{@{}l @{\hspace{-4.8em}}r}
-% \code|Try{ ...; ...; expr1 }.getOrElse(expr2)| & \Comment{evaluates to expr1 if successful or expr2 if exception} \\
-
-% \code|Try(expr1).recover{ case e: Exception => expr2 }| & \hspace{5em}\Comment{Success(expr2) if exception else Success(expr1)} \\
-% \end{tabular}
-% \code|Try(1/0) match { case Success(x) => x; case Failure(e) => 0 }| %\Comment{~~e is ArithmeticException}
-% }
-
-% {\small Predicates on \textbf{Option}: isEmpty, isDefined. Predicates on \textbf{Try}: isSuccess, isFailure} \\
-% {\small Other collection-like methods on \textbf{Option}: foreach, flatMap, filter, toVector, ..., on \textbf{Try}: map, foreach, toOption, ... }
+{\small Predicates on \textbf{Option}: isEmpty, isDefined. Predicates on \textbf{Try}: isSuccess, isFailure} \\
 
 
 
